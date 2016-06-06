@@ -9,11 +9,13 @@
          content must come *after* these tags -->
     <title>Ristorante Con Fusion: Menu</title>
         <!-- Bootstrap -->
+<!-- build:css styles/main.css -->
     <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="styles/bootstrap-social.css" rel="stylesheet">
     <link href="styles/mystyles.css" rel="stylesheet">
+<!-- endbuild -->
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,107 +27,107 @@
 
 <body>
 
-    <div class="container">
-        <div class="row row-content" ng-controller="dishDetailController as dishCon">
+    <div class="container" ng-controller="DishDetailController">
+        <div class="row row-content">
             <div class="col-xs-12">
+                
                 <div class="media">
                   <div class="media-left">
-                    <img class="media-object img-thumbnail" ng-src="{{dishCon.dish.image}}" alt="dish">
+                    <img class="media-object img-thumbnail" ng-src="{{dish.image}}" alt="dish">
                   </div>
 
                   <div class="media-body">
                     <h2 class="media-heading">
-                      {{dishCon.dish.name}}<span class="label label-danger label-xs">{{dishCon.dish.label}}</span>
-                      <span class="badge">{{dishCon.dish.price | currency}}</span>
+                      {{dish.name}}<span class="label label-danger label-xs">{{dish.label}}</span>
+                      <span class="badge">{{dish.price | currency}}</span>
                     </h2>
-                    <p>{{dishCon.dish.description}}</p>
+                    <p>{{dish.description}}</p>
                   </div>
-                  
+             
                 </div>
+
             </div>
 
             <div class="col-xs-9 col-xs-offset-1">
-              <p>Debug: {{dishCon.sort}}</p> 
+                
+                <p>Debug: {{sort}}</p> 
     
-              <p><label>Customer Comments</label> Sort by:<input id="sortInput" type="text" ng-model="dishCon.sort"></p> 
+              <p><label>Customer Comments</label> Sort by:<input id="sortInput" type="text" ng-model="sort"></p> 
 
               <ul class="media-list">
-              <li class="media" ng-repeat="comment in dishCon.dish.comments | orderBy: dishCon.sort">
-                <blockquote class="media-body">
-                  <h3 class="media-heading">{{comment.rating}} Stars</h3>
-                  <p>{{comment.comment}}</p>
-                  <footer>{{comment.author}}, {{comment.date | date:'MMM d, y'}}</footer>
-                </blockquote> 
+                <li class="media" ng-repeat="comment in dish.comments | orderBy: sort">
+                    <blockquote class="media-body">
+                        <h3 class="media-heading">{{comment.rating}}</h3>
+                        <p>{{comment.comment}}</p>
+                        <footer>{{comment.author}}, {{comment.date | date:'MMM d, y'}}</footer>                        
+                    </blockquote>
+                </li>
                   
-               
-              </li>
-                
               </ul>
-               
+
+            </div>
+
+            <div class="col-xs-9 col-xs-offset-1" ng-controller="DishCommentController">
+                    <ul class="list-unstyled" ng-show="!commentForm.name.$error.required && !commentForm.commentText.$error.required" class="help-block">
+                        <blockquote class="media-body">
+                            <h3 class="media-heading">{{star}}</h3>
+                            <p>{{input.comment}}</p>
+                            <footer>{{input.author}}, </footer>
+                        </blockquote>						
+                    </ul>
+
+                <form class="form-horizontal" role="form" name="commentForm"
+                		ng-submit="submitComment()" novalidate>
+                    <div class ="form-group" ng-class="{'has-error':commentForm.name.$error.required && !commentForm.name.$pristine}">
+                        <p>Debug: {{input.author}}</p> 
+                        <label for="name" class="col-sm-2 control-label">Your Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" ng-model="input.author" required>
+                            <span ng-show="commentForm.name.$error.required && !commentForm.name.$pristine" class="help-block">Your name is required.</span>
+                        </div>                        
+                    </div>
+
+                    <div class="form-group">
+                        <p>Debug: {{star}}</p>
+                        <label class="col-sm-2 control-label">Number of Stars</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline"><input type="radio" name="star1" ng-model="star" value="1">1</label>
+                            <label class="radio-inline"><input type="radio" name="star2" ng-model="star" value="2">2</label>
+                            <label class="radio-inline"><input type="radio" name="star3" ng-model="star" value="3">3</label>
+                            <label class="radio-inline"><input type="radio" name="star4" ng-model="star" value="4">4</label>
+                            <label class="radio-inline"><input type="radio" name="star5" ng-model="star" value="5">5</label>
+                        </div>
+                    </div>                    
+
+                    <div class="form-group" ng-class="{'has-error':commentForm.commentText.$error.required && !commentForm.commentText.$pristine}">
+                        <p>Debug: {{input.comment}}</p>
+                        <label for="commentText" class="col-sm-2 control-label">Your Comments</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="commentText" name="commentText" rows="12" ng-model="input.comment" required>
+                            </textarea>
+                            <span ng-show="commentForm.commentText.$error.required && !commentForm.commentText.$pristine" class="help-block">Your comment is required.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" ng-disabled="commentForm.$invalid">Submit Comment</button>
+                            
+                        </div>
+                        
+                    </div>
+
+                </form>
             </div>
         </div>
-
     </div>
 
+<!-- build:js scripts/main.js -->
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script>
-
-        var app = angular.module('confusionApp',[]);
-        
-        app.controller('dishDetailController', function() {
-
-            var dish={
-                          name:'Uthapizza',
-                          image: 'images/uthapizza.png',
-                          category: 'mains', 
-                          label:'Hot',
-                          price:'4.99',
-                          description:'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
-                           comments: [
-                               {
-                                   rating:5,
-                                   comment:"Imagine all the eatables, living in conFusion!",
-                                   author:"John Lemon",
-                                   date:"2012-10-16T17:57:28.556094Z"
-                               },
-                               {
-                                   rating:4,
-                                   comment:"Sends anyone to heaven, I wish I could get my mother-in-law to eat it!",
-                                   author:"Paul McVites",
-                                   date:"2014-09-05T17:57:28.556094Z"
-                               },
-                               {
-                                   rating:3,
-                                   comment:"Eat it, just eat it!",
-                                   author:"Michael Jaikishan",
-                                   date:"2015-02-13T17:57:28.556094Z"
-                               },
-                               {
-                                   rating:4,
-                                   comment:"Ultimate, Reaching for the stars!",
-                                   author:"Ringo Starry",
-                                   date:"2013-12-02T17:57:28.556094Z"
-                               },
-                               {
-                                   rating:2,
-                                   comment:"It's your birthday, we're gonna party!",
-                                   author:"25 Cent",
-                                   date:"2011-12-02T17:57:28.556094Z"
-                               }
-                               
-                           ]
-                    };
-            
-            this.dish = dish;
-
-            this.sort = 'rating';
-
-
-            
-        });
-
-
-    </script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers.js"></script>
+    <script src="scripts/service.js"></script>
+<!-- endbuild -->
 
 </body>
 
