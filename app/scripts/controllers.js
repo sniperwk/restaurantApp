@@ -8,7 +8,8 @@ angular.module('confusionApp')
             $scope.filtText = '';
             $scope.showDetails = false;
 
-            $scope.dishes = menuFactory.getDishes();
+            $scope.dishes= menuFactory.getDishes();
+
                         
             $scope.select = function(setTab) {
                 $scope.tab = setTab;
@@ -69,48 +70,45 @@ angular.module('confusionApp')
 
         .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
 
-            var dish = menuFactory.getDish(parseInt($stateParams.id, 10));
+            var dish= menuFactory.getDish(parseInt($stateParams.id,10));
             
             $scope.dish = dish;
+
             $scope.sort = "date";
+            
         }])
 
         .controller('DishCommentController', ['$scope', function($scope) {
             
-            //Step 1: Create a JavaScript object to hold the comment from the form
-            $scope.input = {
-              rating: 0,
-              comment:"",
-              author: "",
-              date: ""
-            };
-
-            $scope.star = "5";
-
+            $scope.mycomment = {rating:5, comment:"", author:"", date:""};
+            
             $scope.submitComment = function () {
                 
-                //Step 2: This is how you record the date
-                $scope.input.date = new Date().toISOString();
-
-                // set the rating(int) from star(string)
-                $scope.input.rating = parseInt($scope.star);
+                $scope.mycomment.date = new Date().toISOString();
+                console.log($scope.mycomment);
                 
-                // Step 3: Push your comment into the dish's comment array
-                $scope.dish.comments.push($scope.input);
+                $scope.dish.comments.push($scope.mycomment);
                 
-                //Step 4: reset your form to pristine
                 $scope.commentForm.$setPristine();
+                
+                $scope.mycomment = {rating:5, comment:"", author:"", date:""};
+            }
+        }])
 
-                //Step 5: reset your JavaScript object that holds your comment
-                $scope.input = {
-                  author: "",
-                  rating: 0,
-                  comment:"",
-                  date: ""
-                };
-            };
+        // implement the IndexController and About Controller here
+        .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
+            $scope.members = corporateFactory.getLeaders();
+        }])
 
+        .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory) {
+            $scope.promotion = menuFactory.getPromotion(0);
+
+            $scope.feature = menuFactory.getDish(0);
+
+            $scope.chef = corporateFactory.getLeader(3);
 
         }])
+
+
 
 ;
