@@ -95,7 +95,7 @@ angular.module('confusionApp')
                                     }
                                     );
 
-            $scope.sort = "date";
+            $scope.sort = "";
             
         }])
 
@@ -115,7 +115,7 @@ angular.module('confusionApp')
                 $scope.commentForm.$setPristine();
                 
                 $scope.mycomment = {rating:5, comment:"", author:"", date:""};
-            }
+            };
         }])
 
         // implement the IndexController and About Controller here

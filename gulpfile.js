@@ -86,5 +86,8 @@ gulp.task('browser-sync', ['default'], function() {
 	});
 
 	// watch any files in dist/, reload on change
-	gulp.watch(['dist/**'].on('change', browserSync.reload));
+	gulp.watch(['dist/**']).on('change', browserSync.reload);
 });
+
+
+// try to fix cannot GET error
