@@ -42,11 +42,29 @@
             </div>
         </div>
 
-        <div class="row row-content">
+        <div class="row row-content" ng-controller="FeedbackController">
            <div class="col-xs-12">
               <h3>Send us your Feedback</h3> 
+
+                <ul class="media-list">
+                    <h3>All comments:</h3>
+                    <li class="media" ng-repeat="entry in feedbackCollection">
+                        <blockquote class="media-body">
+                            <h3 class="media-heading">
+                                {{entry.lastName}}, {{entry.firstName}}
+                            </h3>
+                            <p>{{entry.tel.areaCode}}-{{entry.tel.number}}</p>
+                            <p>{{entry.email}}</p>
+                            <p>agree to contact: {{entry.agree}}</p>
+                            <p>{{entry.mychannel}}</p>
+                            <p>comments: {{entry.comments}}</p>
+                        </blockquote>                        
+                    </li>                    
+                </ul>
+
            </div>
-            <div class="col-xs-12 col-sm-9" ng-controller="FeedbackController">
+
+            <div class="col-xs-12 col-sm-9">                
                 <form class="form-horizontal" role="form" name="feedbackForm" ng-submit="sendFeedback()" novalidate>
                     <div class="form-group" ng-class="{'has-error': feedbackForm.firstName.$error.required && !feedbackForm.firstName.$pristine}">
                         <label for="firstname" class="col-sm-2 control-label">First Name</label>
@@ -112,7 +130,7 @@
             </div>
              <div class="col-xs-12 col-sm-3">
                 <h3>Your Feedback:</h3>
-                <p>{{feedback.firstName}} {{feedback.lastName | uppercase}}</p>
+                <p>Name: {{feedback.firstName}} {{feedback.lastName | uppercase}}</p>
                 <p>Tel: ({{feedback.tel.areaCode}}) {{feedback.tel.number}}</p>
                 <p>Email: {{feedback.email}}</p>
                 <p ng-show="feedback.agree">Contact by: {{feedback.mychannel}}</p>

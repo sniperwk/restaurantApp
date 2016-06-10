@@ -5,7 +5,7 @@ angular.module('confusionApp')
 
         .service('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     
-            
+            /*  local promotions object
             var promotions = [
                 {
                           _id:0,
@@ -17,6 +17,7 @@ angular.module('confusionApp')
                 }
                 
             ];
+            */
     
                 this.getDishes = function(){
                     
@@ -27,17 +28,19 @@ angular.module('confusionApp')
    
                 // implement a function named getPromotion
                 // that returns a selected promotion.
-                this.getPromotion = function(index) {
-                  return promotions[index];
+                this.getPromotions = function(index) {
+                  //return promotions[index];
+                  return $resource(baseURL + "promotions/:id", null);
                 };
     
                         
         }])
 
-        .factory('corporateFactory', function() {
+        .factory('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     
             var corpfac = {};
-    
+            
+            /* local leadership object
             var leadership = [
                 {
                     name: "Peter Pan",
@@ -69,21 +72,32 @@ angular.module('confusionApp')
                 }
                 
             ];
+            */
      
             // Implement two functions, one named getLeaders,
             // the other named getLeader(index)
             // Remember this is a factory not a service
             corpfac.getLeaders = function() {
-              return leadership;
+              return $resource(baseURL + "leadership/:id", null);
             };
 
+            /* not necessary with server-side data
             corpfac.getLeader = function(index) {
               return leadership[index];
             };
+            */
 
             return corpfac;
     
     
-        })
+        }])
+
+        .service('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+
+            this.getFeedback = function() {
+                return $resource(baseURL + "feedback/:id", null, {'update': {method:'PUT'}});
+            };
+        }])
+
 
 ;

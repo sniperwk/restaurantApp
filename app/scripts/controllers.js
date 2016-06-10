@@ -48,35 +48,96 @@ angular.module('confusionApp')
             };
         }])
 
-        .controller('ContactController', ['$scope', function($scope) {
+        .controller('ContactController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
 
-            $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-            
-            var channels = [{value:"tel", label:"Tel."}, {value:"Email",label:"Email"}];
-            
-            $scope.channels = channels;
-            $scope.invalidChannelSelection = false;
+            $scope.showFeedback = false;
+            $scope.message = "Loading ...";
+
+            $scope.feedbackCollection = feedbackFactory.getFeedback().query(
+                function(response) {
+                    $scope.feedbackCollection = response;
+                    $scope.showFeedback = true;
+                },
+                function(response) {
+                    $scope.message = "Error: " + response.status + " " + response.statusText;
+                }
+                );
+
+
                         
         }])
 
-        .controller('FeedbackController', ['$scope', function($scope) {
+        .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
             
+            var feedback = {
+                firstName:"",
+                lastName:"",
+                tel: {
+                    areaCode: "",
+                    number: ""
+                },
+                agree:false,
+                email:"",
+                mychannel:"",
+                comments: ""
+                };
+
+            $scope.feedback = feedback;
+
+            var channels = [{value:"tel", label:"Tel."}, {value:"Email",label:"Email"}];
+
+            $scope.channels = channels;
+            $scope.invalidChannelSelection = false;
+
+            var feedbackResource = feedbackFactory.getFeedback();
+            $scope.feedbackResource = feedbackResource;
+
             $scope.sendFeedback = function() {
                 
-                console.log($scope.feedback);
                 
                 if ($scope.feedback.agree && ($scope.feedback.mychannel == "")) {
                     $scope.invalidChannelSelection = true;
                     console.log('incorrect');
                 }
-                else {
+                else {                    
                     $scope.invalidChannelSelection = false;
-                    $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-                    $scope.feedback.mychannel="";
+
+                    var keys = Object.keys($scope.feedback);
+
+                    var newFeedback = new feedbackResource();
+
+
+                    for (var j = 0; j < keys.length; j++) {
+                        newFeedback[keys[j]] = $scope.feedback[keys[j]];
+                    } 
+                    newFeedback.$save();
+
+                    
+                    $scope.feedback = {
+                                firstName:"",
+                                lastName:"",
+                                tel: {
+                                    areaCode: "",
+                                    number: ""
+                                },
+                                agree:false,
+                                email:"",
+                                mychannel:"",
+                                comments: ""
+                                };
+                    
+                     
+                    //$scope.feedback.mychannel ="";
+
+                    // update $scope.feedbackCollection
+                    $scope.feedbackCollection = feedbackFactory.getFeedback().query();
+
                     $scope.feedbackForm.$setPristine();
-                    console.log($scope.feedback);
+                    
                 }
             };
+
+
         }])
 
         .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
@@ -120,13 +181,54 @@ angular.module('confusionApp')
 
         // implement the IndexController and About Controller here
         .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
-            $scope.members = corporateFactory.getLeaders();
+            $scope.showLeaders = false;
+            $scope.message = "Loading ...";
+
+            $scope.members = corporateFactory.getLeaders().query(
+                function(response) {
+                    $scope.members = response;
+                    $scope.showLeaders = true;
+                },
+                function(response) {
+                    $scope.message = "Error: " + response.status + " " + response.statusText;
+                }
+                );
+
+       
+
         }])
 
         .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory) {
-            $scope.promotion = menuFactory.getPromotion(0);
+            
+            $scope.showPromotion = false;
+            $scope.promoMessage = "Loading ...";
 
-            $scope.chef = corporateFactory.getLeader(3);
+            $scope.promotion = menuFactory.getPromotions().get({id: 0})
+                                .$promise.then(
+                                    function(response) {
+                                        $scope.promotion = response;
+                                        $scope.showPromotion = true;
+                                    },
+                                    function(response) {
+                                        $scope.promoMessage = "Error: " + response.status + " " + response.statusText;
+                                    }
+                                    );
+
+
+            $scope.showChef = false;
+            $scope.chefMessage = "Loading ...";
+
+            $scope.chef = corporateFactory.getLeaders().get({id: 3})
+                            .$promise.then(
+                                function(response) {
+                                    $scope.chef = response;
+                                    $scope.showChef = true;
+                                },
+                                function(response) {
+                                    $scope.chefMessage = "Error: " + response.status + " " + response.statusText;
+                                }
+                                );
+
             
             $scope.showDish = false;
             $scope.message = "Loading ...";
